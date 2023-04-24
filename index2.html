@@ -1,0 +1,82 @@
+<select id="tonalidades">
+  <option value="C">C</option>
+  <option value="Db">Db</option>
+  <option value="D">D</option>
+  <option value="Eb">Eb</option>
+  <option value="E">E</option>
+  <option value="F">F</option>
+  <option value="Gb">Gb</option>
+  <option value="G">G</option>
+  <option value="Ab">Ab</option>
+  <option value="A">A</option>
+  <option value="Bb">Bb</option>
+  <option value="B">B</option>
+</select>
+
+<input type="number" id="timer" step="0.01" placeholder="Tiempo en segundos" />
+
+<button onclick="seleccionarTonalidad()">Seleccionar tonalidad</button>
+
+<button onclick="validarRespuestas()">validar respuestas</button>
+
+<div id="preguntas"></div>
+
+<script>
+  var grados = {
+    C: ["c", "dm", "em", "f", "g", "am", "b°"],
+    Db: ["db", "ebm", "fm", "gb", "ab", "bbm", "c°"],
+    D: ["d", "em", "f#m", "g", "a", "bm", "c#°"],
+    Eb: ["eb", "fm", "gm", "ab", "bb", "cm", "d°"],
+    E: ["e", "f#m", "g#m", "a", "b", "c#m", "d#°"],
+    F: ["f", "gm", "am", "bb", "c", "dm", "e°"],
+    Gb: ["gb", "abm", "bbm", "cb", "db", "ebm", "f°"],
+    G: ["g", "am", "bm", "c", "d", "em", "f#°"],
+    Ab: ["ab", "bbm", "cm", "db", "eb", "fm", "g°"],
+    A: ["a", "bm", "c#m", "d", "e", "f#m", "g#°"],
+    Bb: ["bb", "cm", "dm", "eb", "f", "gm", "a°"],
+    B: ["b", "c#m", "d#m", "e", "f#", "g#m", "a#°"],
+  };
+
+  const seleccionarTonalidad = () => {
+    var tonalidad = document.getElementById("tonalidades").value;
+    var gradosTonalidad = grados[tonalidad];
+    var gradoAleatorio =
+      gradosTonalidad[Math.floor(Math.random() * gradosTonalidad.length)];
+
+    var preguntasHTML = "";
+    var gradosAleatorios = [1, 2, 3, 4, 5, 6, 7];
+    while (gradosAleatorios.length > 0) {
+      var gradoAleatorioIndex = Math.floor(
+        Math.random() * gradosAleatorios.length
+      );
+      var gradoAleatorioNumero = gradosAleatorios[gradoAleatorioIndex];
+      preguntasHTML +=
+        "<div class='pregunta'>" +
+        gradoAleatorioNumero +
+        ". <input type='text' class='respuesta' data-correcta='" +
+        gradosTonalidad[gradoAleatorioNumero - 1] +
+        "'/> </div>";
+      gradosAleatorios.splice(gradoAleatorioIndex, 1);
+    }
+    document.getElementById("preguntas").innerHTML = preguntasHTML;
+    document.getElementById("validar").style.display = "block";
+  };
+
+  const validarRespuestas = () => {
+    var respuestas = document.getElementsByClassName("respuesta");
+    for (var i = 0; i < respuestas.length; i++) {
+      var respuesta = respuestas[i];
+      var respuestaValue = respuesta.value.trim();
+      var respuestaCorrecta = respuesta.getAttribute("data-correcta");
+      if (respuestaValue === respuestaCorrecta) {
+        respuesta.style.backgroundColor = "green";
+      } else {
+        respuesta.style.backgroundColor = "red";
+      }
+    }
+  };
+
+  document
+    .getElementById("validar")
+    .addEventListener("click", validarRespuestas);
+</script>

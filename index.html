@@ -1,0 +1,94 @@
+<select id="tonalidades">
+  <option value="C">C</option>
+  <option value="Db">Db</option>
+  <option value="D">D</option>
+  <option value="Eb">Eb</option>
+  <option value="E">E</option>
+  <option value="F">F</option>
+  <option value="Gb">Gb</option>
+  <option value="G">G</option>
+  <option value="Ab">Ab</option>
+  <option value="A">A</option>
+  <option value="Bb">Bb</option>
+  <option value="B">B</option>
+</select>
+
+<input type="number" id="timer" step="0.01" placeholder="Tiempo en segundos" />
+
+<button onclick="seleccionarTonalidad()">Seleccionar tonalidad</button>
+
+<div id="preguntas"></div>
+
+<script>
+  var grados = {
+    C: ["C", "Dm", "Em", "F", "G", "Am", "B°"],
+    Db: ["Db", "Ebm", "Fm", "Gb", "Ab", "Bbm", "C°"],
+    D: ["D", "Em", "F#m", "G", "A", "Bm", "C#°"],
+    Eb: ["Eb", "Fm", "Gm", "Ab", "Bb", "Cm", "D°"],
+    E: ["E", "F#m", "G#m", "A", "B", "C#m", "D#°"],
+    F: ["F", "Gm", "Am", "Bb", "C", "Dm", "E°"],
+    Gb: ["Gb", "Abm", "Bbm", "Cb", "Db", "Ebm", "F°"],
+    G: ["G", "Am", "Bm", "C", "D", "Em", "F#°"],
+    Ab: ["Ab", "Bbm", "Cm", "Db", "Eb", "Fm", "G°"],
+    A: ["A", "Bm", "C#m", "D", "E", "F#m", "G#°"],
+    Bb: ["Bb", "Cm", "Dm", "Eb", "F", "Gm", "A°"],
+    B: ["B", "C#m", "D#m", "E", "F#", "G#m", "A#°"],
+  };
+
+  var opciones;
+  var respuestaCorrecta;
+
+  const seleccionarTonalidad = () => {
+    opciones = [];
+    respuestaCorrecta = [];
+    var tonalidad = document.getElementById("tonalidades").value;
+    var gradosTonalidad = grados[tonalidad];
+    var pregunta = document.getElementById("preguntas");
+    var gradoAleatorio = Math.floor(Math.random() * 7) + 1;
+    respuestaCorrecta = gradosTonalidad[gradoAleatorio - 1];
+    
+    opciones.push(respuestaCorrecta);
+
+    // Agregar 3 opciones incorrectas aleatorias
+    while (opciones.length < 4) {
+      var opcionAleatoria = gradosTonalidad[Math.floor(Math.random() * 7)];
+      if (!opciones.includes(opcionAleatoria)) {
+        opciones.push(opcionAleatoria);
+      }
+    }
+
+    // Barajar las opciones para que no siempre estén en el mismo orden
+    opciones.sort(function () {
+      return 0.5 - Math.random();
+    });
+
+    // Mostrar las opciones en pantalla
+    pregunta.innerHTML =
+      "¿Cuál es el grado " +
+      gradoAleatorio +
+      " en la tonalidad de " +
+      tonalidad +
+      "?<br><br>";
+    for (var i = 1; i <= 4; i++) {
+      var divOpcion = document.createElement("div");
+      divOpcion.innerHTML = i + "-" + opciones[i - 1];
+      divOpcion.classList.add("opcion");
+      pregunta.appendChild(divOpcion);
+    }
+  };
+  // Agregar evento para escuchar la tecla presionada
+  document.addEventListener("keyup", function (event) {
+    // Verificar si la tecla presionada es un número del 1 al 4
+    if (event.keyCode >= 49 && event.keyCode <= 52) {
+      // Seleccionar la opción correspondiente
+      var opcionSeleccionada = opciones[event.keyCode - 49];
+
+      // Verificar si es la opción correcta
+      if (opcionSeleccionada === respuestaCorrecta) {
+        alert("¡Correcto!");
+      } else {
+        alert("Incorrecto. La respuesta correcta es: " + respuestaCorrecta);
+      }
+    }
+  });
+</script>
